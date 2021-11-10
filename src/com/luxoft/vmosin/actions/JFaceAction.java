@@ -2,7 +2,6 @@ package com.luxoft.vmosin.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.StatusLineManager;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 public class JFaceAction extends Action {
 	StatusLineManager statman;

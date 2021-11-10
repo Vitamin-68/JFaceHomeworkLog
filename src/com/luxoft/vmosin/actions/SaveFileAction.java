@@ -8,15 +8,15 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import com.luxoft.vmosin.eintity.Person;
+import com.luxoft.vmosin.ui.LeftFieldTablViewer;
 import com.luxoft.vmosin.utils.JsonDataStoreImpl;
 
 public class SaveFileAction extends Action {
 
-	private List<Person> persons;
+	private static SaveFileAction instance;
 
-	public SaveFileAction(List<Person> persons) {
+	private SaveFileAction() {
 		super("&Save file@Ctrl+S", AS_PUSH_BUTTON);
-		this.persons = persons;
 	}
 
 	public void run() {
@@ -26,7 +26,15 @@ public class SaveFileAction extends Action {
 		String fn = fileDialog.open();
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
 		if (fn != null) {
+			List<Person> persons = LeftFieldTablViewer.getInstance(null, null, AS_CHECK_BOX).getPersons();
 			dataStore.saveData(persons, fn);
 		}
+	}
+	
+	public static SaveFileAction getInstance() {
+		if (instance == null) {
+			instance = new SaveFileAction();
+		}
+		return instance;
 	}
 }

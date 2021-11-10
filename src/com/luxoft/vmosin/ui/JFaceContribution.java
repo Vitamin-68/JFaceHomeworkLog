@@ -62,8 +62,8 @@ public class JFaceContribution extends ApplicationWindow {
 		mainMenu.add(menuEdit);
 		mainMenu.add(menuHelp);
 
-		menuFile.add(OpenFileAction.getInstance(persons));
-		menuFile.add(new SaveFileAction(persons));
+		menuFile.add(OpenFileAction.getInstance());
+		menuFile.add(SaveFileAction.getInstance());
 //		menuFile.add(subMenuFileSaveAs);
 		menuFile.add(new ExitAction(this));
 

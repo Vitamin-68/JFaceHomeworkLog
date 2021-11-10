@@ -19,10 +19,11 @@ public class WorkAreaComposite extends Composite {
 		SashForm form = new SashForm(this, SWT.HORIZONTAL);
 		form.setSize(parent.getSize().x - 17, parent.getSize().y - 90);
 
-		new LeftFieldTablViewer(form, list, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+		LeftFieldTablViewer.getInstance(form, list, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
 		new RightFieldPersonData(form, list, SWT.NONE);
 
 		form.setWeights(new int[] { 55, 35 });
+		
 	}
 
 }

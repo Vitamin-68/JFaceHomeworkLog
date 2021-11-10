@@ -3,24 +3,23 @@ package com.luxoft.vmosin.actions;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 
 import com.luxoft.vmosin.eintity.Person;
+import com.luxoft.vmosin.ui.LeftFieldTablViewer;
 import com.luxoft.vmosin.utils.JsonDataStoreImpl;
 
 public class OpenFileAction extends Action {
 
 	private static OpenFileAction instance;
-	public List<Person> persons;
+//	public List<Person> persons;
 
-	private OpenFileAction(List<Person> persons) {
+	private OpenFileAction() {
 		super("&Open file...@Ctrl+O", AS_PUSH_BUTTON);
-		this.persons = persons;
-		ImageDescriptor.createFromURL(getClass().getResource("/checked.gif")).createImage();
+//		this.persons = persons;
 	}
 
 	public void run() {
@@ -30,16 +29,22 @@ public class OpenFileAction extends Action {
 		String fn = fileDialog.open();
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
         if (fn != null) {
-        	persons = dataStore.loadData(fn);
-        	
-//        	System.out.println(persons.toString());
-//        	System.out.println(persons.get(0).toString());
+        	System.out.println("Open");
+        	List<Person> persons = dataStore.loadData(fn);
+
+        	LeftFieldTablViewer tv = LeftFieldTablViewer.getInstance(null, null, SWT.NONE);
+        	tv.setPersons(persons);
+        	tv.setInput(tv.getPersons());
+
+        	//this doesn't work 
+//        	tv.getTable().redraw();
+//        	tv.refresh();
         }
 	}
 	
-	public static OpenFileAction getInstance(List<Person> persons) {
+	public static OpenFileAction getInstance() {
 		if (instance == null) {
-			instance = new OpenFileAction(persons);
+			instance = new OpenFileAction();
 		}
 		return instance;
 	}

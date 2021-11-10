@@ -15,16 +15,14 @@ import org.eclipse.swt.widgets.Table;
 
 import com.luxoft.vmosin.eintity.Person;
 
-public class LeftFieldTablViewer extends TableViewer {
+public class LeftFieldTablViewer2 extends TableViewer {
 
-	private static LeftFieldTablViewer instance;
-	private List<Person> persons;
+	List<Person> persons;
 
-	private LeftFieldTablViewer(Composite parent, List<Person> persons, int style) {
+	public LeftFieldTablViewer2(Composite parent, List<Person> persons, int style) {
 		super(parent, style);
 		this.setContentProvider(ArrayContentProvider.getInstance());
 		this.persons = persons;
-		System.out.println("Left - " + this.toString());
 
 		Table table = this.getTable();
 		table.setHeaderVisible(true);
@@ -92,21 +90,6 @@ public class LeftFieldTablViewer extends TableViewer {
 //		});
 		this.setInput(persons);
 		this.refresh();
-	}
-	
-	public static LeftFieldTablViewer getInstance(Composite parent, List<Person> persons, int style) {
-		if (instance == null) {
-			instance = new LeftFieldTablViewer(parent, persons, style);
-		}
-		return instance;
-	}
-
-	public List<Person> getPersons() {
-		return persons;
-	}
-
-	public void setPersons(List<Person> persons) {
-		this.persons = persons;
 	}
 	
 }
