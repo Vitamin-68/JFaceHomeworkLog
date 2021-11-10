@@ -1,8 +1,10 @@
 package com.luxoft.vmosin.actions;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -20,21 +22,35 @@ public class SaveFileAction extends Action {
 	}
 
 	public void run() {
-		FileDialog fileDialog = new FileDialog(new Shell(), SWT.SAVE);
+		Shell fds = new Shell();
+		FileDialog fileDialog = new FileDialog(fds, SWT.SAVE);
 		fileDialog.setFileName("Persons.json");
 		fileDialog.setFilterExtensions(new String[] { "*.json", "*.*" });
-		String fn = fileDialog.open();
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
-		if (fn != null) {
-			List<Person> persons = LeftFieldTablViewer.getInstance(null, null, AS_CHECK_BOX).getPersons();
-			dataStore.saveData(persons, fn);
+		boolean isSaved = false;
+		while (!isSaved) {
+			String fn = fileDialog.open();
+			File inputfile = new File(fn);
+			if (fn != null) {
+				if (!inputfile.exists() || MessageDialog.openQuestion(fds, "Confirm Save file",
+						getFileName(fn) + " already exist!\nDo you want to replace it?")) {
+					List<Person> persons = LeftFieldTablViewer.getInstance(null, null, AS_CHECK_BOX).getPersons();
+					dataStore.saveData(persons, fn);
+					isSaved = true;
+				}
+			}
 		}
 	}
-	
+
 	public static SaveFileAction getInstance() {
 		if (instance == null) {
 			instance = new SaveFileAction();
 		}
 		return instance;
+	}
+
+	private String getFileName(String filePath) {
+		int idx = filePath.replaceAll("\\\\", "/").lastIndexOf("/");
+		return idx >= 0 ? filePath.substring(idx + 1) : filePath;
 	}
 }

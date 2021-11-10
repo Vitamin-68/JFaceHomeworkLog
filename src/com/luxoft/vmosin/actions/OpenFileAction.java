@@ -15,11 +15,9 @@ import com.luxoft.vmosin.utils.JsonDataStoreImpl;
 public class OpenFileAction extends Action {
 
 	private static OpenFileAction instance;
-//	public List<Person> persons;
 
 	private OpenFileAction() {
 		super("&Open file...@Ctrl+O", AS_PUSH_BUTTON);
-//		this.persons = persons;
 	}
 
 	public void run() {

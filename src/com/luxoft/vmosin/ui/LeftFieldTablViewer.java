@@ -24,13 +24,10 @@ public class LeftFieldTablViewer extends TableViewer {
 		super(parent, style);
 		this.setContentProvider(ArrayContentProvider.getInstance());
 		this.persons = persons;
-		System.out.println("Left - " + this.toString());
 
 		Table table = this.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-
-//		List<Person> persons = dataStore.loadData("resources/save.json");
 
 		TableViewerColumn column1 = new TableViewerColumn(this, SWT.NONE);
 		column1.getColumn().setWidth(138);
