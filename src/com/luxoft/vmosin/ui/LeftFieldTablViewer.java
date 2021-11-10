@@ -20,10 +20,10 @@ public class LeftFieldTablViewer extends TableViewer {
 	private static LeftFieldTablViewer instance;
 	private List<Person> persons;
 
-	private LeftFieldTablViewer(Composite parent, List<Person> persons, int style) {
+	private LeftFieldTablViewer(Composite parent, int style) {
 		super(parent, style);
 		this.setContentProvider(ArrayContentProvider.getInstance());
-		this.persons = persons;
+//		this.persons = persons;
 
 		Table table = this.getTable();
 		table.setHeaderVisible(true);
@@ -91,9 +91,9 @@ public class LeftFieldTablViewer extends TableViewer {
 		this.refresh();
 	}
 	
-	public static LeftFieldTablViewer getInstance(Composite parent, List<Person> persons, int style) {
+	public static LeftFieldTablViewer getInstance(Composite parent, int style) {
 		if (instance == null) {
-			instance = new LeftFieldTablViewer(parent, persons, style);
+			instance = new LeftFieldTablViewer(parent, style);
 		}
 		return instance;
 	}

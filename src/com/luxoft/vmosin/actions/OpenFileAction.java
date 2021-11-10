@@ -30,7 +30,7 @@ public class OpenFileAction extends Action {
         	System.out.println("Open");
         	List<Person> persons = dataStore.loadData(fn);
 
-        	LeftFieldTablViewer tv = LeftFieldTablViewer.getInstance(null, null, SWT.NONE);
+        	LeftFieldTablViewer tv = LeftFieldTablViewer.getInstance(null, SWT.NONE);
         	tv.setPersons(persons);
         	tv.setInput(tv.getPersons());
 

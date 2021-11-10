@@ -22,21 +22,24 @@ public class SaveFileAction extends Action {
 	}
 
 	public void run() {
-		Shell fds = new Shell();
-		FileDialog fileDialog = new FileDialog(fds, SWT.SAVE);
-		fileDialog.setFileName("Persons.json");
+		FileDialog fileDialog = new FileDialog(new Shell(), SWT.SAVE);
+		String fn = "Persons.json";
+		fileDialog.setFileName(fn);
 		fileDialog.setFilterExtensions(new String[] { "*.json", "*.*" });
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
 		boolean isSaved = false;
-		while (!isSaved) {
-			String fn = fileDialog.open();
-			File inputfile = new File(fn);
+		while (!isSaved && !(fn == null && fileDialog.getFileName().equals(""))) {
+			fn = fileDialog.open();
 			if (fn != null) {
-				if (!inputfile.exists() || MessageDialog.openQuestion(fds, "Confirm Save file",
+				File inputfile = new File(fn);
+				if (!inputfile.exists() || MessageDialog.openQuestion(new Shell(), "Confirm Save file",
 						getFileName(fn) + " already exist!\nDo you want to replace it?")) {
-					List<Person> persons = LeftFieldTablViewer.getInstance(null, null, AS_CHECK_BOX).getPersons();
+					List<Person> persons = LeftFieldTablViewer.getInstance(null, SWT.NONE).getPersons();
 					dataStore.saveData(persons, fn);
 					isSaved = true;
+				}
+				else {
+					fileDialog.setFileName("");
 				}
 			}
 		}
