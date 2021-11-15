@@ -1,19 +1,12 @@
 package com.luxoft.vmosin.ui;
 
-import java.util.List;
-
-import static org.eclipse.jface.widgets.WidgetFactory.text;
-
-import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.SimpleContentProposalProvider;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.*;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -21,11 +14,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+import com.luxoft.vmosin.actions.SaveFileAction;
 import com.luxoft.vmosin.eintity.Person;
 
 public class RightFieldPersonData extends Composite {
 
-//	private final List<Person> persons;
+	private Text fieldName;
+	private Text fieldGroup;
 
 	public RightFieldPersonData(Composite parent, int style) {
 		super(parent, style);
@@ -38,14 +33,14 @@ public class RightFieldPersonData extends Composite {
 
 		Label labelName = new Label(this, SWT.LEFT);
 		labelName.setText("Name");
-		Text fieldName = new Text(this, SWT.RIGHT | SWT.BORDER);
+		fieldName = new Text(this, SWT.RIGHT | SWT.BORDER);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gridData.horizontalSpan = 2;
 		fieldName.setLayoutData(gridData);
 
 		Label labelGroup = new Label(this, SWT.LEFT);
 		labelGroup.setText("Group");
-		Text fieldGroup = new Text(this, SWT.RIGHT | SWT.BORDER);
+		fieldGroup = new Text(this, SWT.RIGHT | SWT.BORDER);
 		fieldGroup.setLayoutData(gridData);
 		fieldGroup.addVerifyListener(new VerifyListener() {
 			@Override
@@ -74,15 +69,72 @@ public class RightFieldPersonData extends Composite {
 		buttonComp.setLayout(buttLayout);
 		Button button1 = new Button(buttonComp, SWT.PUSH);
 		button1.setText("New");
-		button1.addMouseListener(new MouseAdapter() {
+		button1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (!fieldName.getText().equals("") && !fieldGroup.getText().equals("")) {
+					addNewRecord();
+					fieldName.setText("");
+					fieldGroup.setText("");
+					fieldName.setFocus();
+				} else {
+					Status status = new Status(IStatus.WARNING, "dd", 0,
+							"Fields \"Name\" and \"Group\" are not allowed to be empty", null);
+					ErrorDialog.openError(null, "Error Message", "Enter text to \"Name\" or numbers to \"Group\"",
+							status);
+				}
+			}
 
+			private void addNewRecord() {
+				Person p = new Person();
+				p.setName(fieldName.getText());
+				p.setGroup(Integer.parseInt(fieldGroup.getText()));
+				p.setDone(buttonCheck.getSelection());
+				LeftFieldTablViewer.getInstance().getPersons().add(p);
+				LeftFieldTablViewer.getInstance().refresh();
+			}
 		});
 		Button button2 = new Button(buttonComp, SWT.PUSH);
 		button2.setText("Save");
+		button2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+//				SaveFileAction save = new SaveFileAction();
+//				save.run();
+			}
+		});
 		Button button3 = new Button(buttonComp, SWT.PUSH);
 		button3.setText("Delete");
+		button3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] tableItems = LeftFieldTablViewer.getInstance().getTable().getSelection();
+				if (tableItems.length > 0 && MessageDialog.openQuestion(new Shell(), "", "Delete selected row(s)?")) {
+					delRows(tableItems);
+				}
+			}
+
+			private void delRows(TableItem[] tableItems) {
+				for (int i = 0; i < tableItems.length; i++) {
+					Person p = (Person) tableItems[i].getData();
+					LeftFieldTablViewer.getInstance().getPersons().remove(p);
+				}
+				LeftFieldTablViewer.getInstance().refresh();
+			}
+		});
+
 		Button button4 = new Button(buttonComp, SWT.PUSH);
-		button4.setText("Cancel");
+		button4.setText("Clear");
+		button4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				fieldName.setText("");
+				fieldGroup.setText("");
+				buttonCheck.setSelection(false);
+				fieldName.setFocus();
+			}
+
+		});
 		GridData gridDataButt = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gridDataButt.horizontalSpan = 4;
 		buttonComp.setLayoutData(gridDataButt);

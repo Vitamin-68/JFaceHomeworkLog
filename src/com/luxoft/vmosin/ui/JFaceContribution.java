@@ -10,29 +10,27 @@ import org.eclipse.swt.widgets.Control;
 import com.luxoft.vmosin.actions.ExitAction;
 import com.luxoft.vmosin.actions.AboutAction;
 import com.luxoft.vmosin.actions.DeleteAction;
-import com.luxoft.vmosin.actions.JFaceAction;
+import com.luxoft.vmosin.actions.StatusAction;
 import com.luxoft.vmosin.actions.OpenFileAction;
 import com.luxoft.vmosin.actions.SaveFileAction;
+import com.luxoft.vmosin.actions.SaveFileAsAction;
 
 public class JFaceContribution extends ApplicationWindow {
-	StatusLineManager slm = new StatusLineManager();
-	JFaceAction status_action = new JFaceAction(slm);
-	ActionContributionItem aci = new ActionContributionItem(status_action);
+	public StatusLineManager slm = new StatusLineManager();
+	StatusAction status_action = new StatusAction(slm);
+//	ActionContributionItem aci = new ActionContributionItem(status_action);
 
 	public JFaceContribution() {
 		super(null);
-		addStatusLine();
 		addMenuBar();
+		addStatusLine();
+//		slm.BEGIN_GROUP;
 	}
 
 	protected Control createContents(Composite parent) {
 		
 		getShell().setText("JFace homework log");
 		parent.setSize(700, 300);
-		
-//		persons.add(new Person("Ivan", 1, true));
-//		persons.add(new Person("Piter", 1, false));
-//		persons.add(new Person("John", 2, false));
 		
 		new WorkAreaComposite(parent);
 		
@@ -50,9 +48,9 @@ public class JFaceContribution extends ApplicationWindow {
 		mainMenu.add(menuEdit);
 		mainMenu.add(menuHelp);
 
-		menuFile.add(OpenFileAction.getInstance());
-		menuFile.add(SaveFileAction.getInstance());
-//		menuFile.add(subMenuFileSaveAs);
+		menuFile.add(new OpenFileAction(slm));
+		menuFile.add(new SaveFileAction(slm));
+		menuFile.add(new SaveFileAsAction(slm));
 		menuFile.add(new ExitAction(this));
 		menuEdit.add(new DeleteAction());
 		menuHelp.add(new AboutAction());

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -43,20 +42,20 @@ public class JsonDataStoreImpl implements DataStore<Person>{
 	}
 
 	@Override
-	public List<Person> loadData(String fileName) {
+	public String loadData(String fileName, List <Person> list) {
 		String inputData = null;
 		try(BufferedReader reader = new BufferedReader(new FileReader (fileName))) {
 			StringBuilder stringBuilder = new StringBuilder();
 			while( ( inputData = reader.readLine() ) != null ) {
-	            stringBuilder.append( inputData );
+	            stringBuilder.append(inputData);
 	        }
 			inputData = stringBuilder.toString();
 		} catch (IOException e) {
 			System.out.println("File not found.");
 			e.printStackTrace();
 		}
-
-		List<Person> list = new ArrayList<>();
+		
+		list.clear();
 		JSONArray jsonArray = new JSONArray(inputData);
 		for (int i = 0; i < jsonArray.length(); i++) {
 			 JSONObject jObj = jsonArray.getJSONObject(i);
@@ -66,8 +65,7 @@ public class JsonDataStoreImpl implements DataStore<Person>{
 		     person.setDone(jObj.getBoolean("isDone"));
 		     list.add(person);
 		}
-		
-		return list;
+		return fileName;
 	}
 	
 	

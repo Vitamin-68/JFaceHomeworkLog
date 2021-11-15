@@ -9,27 +9,29 @@ import org.eclipse.swt.widgets.Shell;
 import com.luxoft.vmosin.ui.LeftFieldTablViewer;
 import com.luxoft.vmosin.utils.JsonDataStoreImpl;
 
-public class OpenFileAction extends Action {
+public class SaveFileAsAction extends Action {
 	
 	private StatusLineManager statman;
 
-	public OpenFileAction(StatusLineManager sm) {
-		super("&Open file...@Ctrl+O", AS_PUSH_BUTTON);
+	public SaveFileAsAction(StatusLineManager sm) {
+		super("Save &As ...@Ctrl+Shift+S", AS_PUSH_BUTTON);
 		statman = sm;
 	}
 
 	public void run() {
 		LeftFieldTablViewer tv = LeftFieldTablViewer.getInstance();
-		FileDialog fileDialog = new FileDialog(new Shell(), SWT.OPEN);
-		fileDialog.setFileName(tv.getFileStore());
-		fileDialog.setFilterExtensions(new String[] { "*.json", "*.*" });
-		String fn = fileDialog.open();
+		String fn = tv.getFileStore();
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
+		FileDialog fileDialog = new FileDialog(new Shell(), SWT.SAVE);
+		fileDialog.setFileName(getNameFromPath(fn));
+		fileDialog.setFilterExtensions(new String[] { "*.json", "*.*" });
+		fileDialog.setOverwrite(true);
+		fn = fileDialog.open();
 		if (fn != null) {
-			tv.setFileStore(dataStore.loadData(fn, tv.getPersons()));
-			tv.refresh();
+			dataStore.saveData(tv.getPersons(), fn);
+			tv.setFileStore(fn);
 			statman.setMessage("File name: " + getNameFromPath(LeftFieldTablViewer.getInstance().getFileStore()) 
-					+ "		Status: Saved.");
+			+ "		Status: Saved.");
 		}
 	}
 	
