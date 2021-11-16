@@ -74,32 +74,15 @@ public class LeftFieldTablViewer extends TableViewer {
 		createTableColumn(this, SWT.NONE, PersonColumn.NAME);
 		createTableColumn(this, SWT.RIGHT, PersonColumn.GROUP);
 		createTableColumn(this, SWT.CENTER, PersonColumn.IS_DONE);
-		
-//		TableViewerColumn column1 = new TableViewerColumn(this, SWT.NONE);
-//		column1.getColumn().setWidth(138);
-//		column1.getColumn().setText("Name");
-//		column1.setLabelProvider(createLabelProvider(this, PersonColumn.NAME));
-//			@Override
-//			public String getText(Object element) {
-//				Person p = (Person) element;
-//				return p.getName();
-//			}
-//		});
-//		column1.getColumn().addSelectionListener(new SelectionAdapter() {
-//		      public void widgetSelected(SelectionEvent event) {
-//		        ((PlayerViewerSorter) tablView.getSorter())
-//		            .doSort(TabColumnConst.COLUMN_DONE);
-//		        tablView.refresh();
-//		      }
-//		    });
 
 		this.setInput(persons);
-		
+
 		if (instance == null) {
 			instance = this;
 		}
 
 	}
+
 	private TableViewerColumn createTableColumn(TableViewer viewer, int style, PersonColumn column) {
 		TableViewerColumn tColumn = new TableViewerColumn(viewer, style);
 		tColumn.getColumn().setWidth(138);
@@ -120,8 +103,7 @@ public class LeftFieldTablViewer extends TableViewer {
 				case GROUP:
 					if (p1.getGroup() > p2.getGroup()) {
 						return 1;
-					}
-					else if (p1.getGroup() < p2.getGroup()) {
+					} else if (p1.getGroup() < p2.getGroup()) {
 						return -1;
 					}
 					return 0;
@@ -130,7 +112,7 @@ public class LeftFieldTablViewer extends TableViewer {
 					p2Field = String.valueOf(p2.isDone());
 					break;
 				default:
-					p1Field = ""; 
+					p1Field = "";
 					p2Field = "";
 					break;
 				}

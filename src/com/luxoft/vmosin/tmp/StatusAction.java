@@ -1,4 +1,4 @@
-package com.luxoft.vmosin.actions;
+package com.luxoft.vmosin.tmp;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.StatusLineManager;
@@ -7,16 +7,15 @@ import com.luxoft.vmosin.ui.LeftFieldTablViewer;
 
 public class StatusAction extends Action {
 	StatusLineManager statman;
+	public static int count = 0;
 
 	public StatusAction(StatusLineManager sm) {
-//		super("&Trigger @CTRL+T", AS_PUSH_BUTTON);
 		statman = sm;
-//		setToolTipText("Trigger the Action");
-//		setImageDescriptor(ImageDescriptor.createFromFile(this.getClass(), "eclipse.gif"));
+		count++;
 	}
 
 	public void run() {
 		statman.setMessage("File name: " + LeftFieldTablViewer.getInstance().getFileStore() 
-				+ "Status: ");
+				+ "Status: Count =  " + count);
 	}
 }

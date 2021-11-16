@@ -2,8 +2,9 @@ package com.luxoft.vmosin.ui;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,10 +15,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+import com.luxoft.vmosin.actions.DeleteAction;
 import com.luxoft.vmosin.actions.SaveFileAction;
 import com.luxoft.vmosin.eintity.Person;
 
 public class RightFieldPersonData extends Composite {
+	
+	StatusLineManager slm = new StatusLineManager();
+	SaveFileAction sfa = new SaveFileAction(slm);
+	ActionContributionItem aciSfa = new ActionContributionItem(sfa);
+	DeleteAction da = new DeleteAction(slm);
+	ActionContributionItem aciDa = new ActionContributionItem(da);
 
 	private Text fieldName;
 	private Text fieldGroup;
@@ -94,34 +102,32 @@ public class RightFieldPersonData extends Composite {
 				LeftFieldTablViewer.getInstance().refresh();
 			}
 		});
-		Button button2 = new Button(buttonComp, SWT.PUSH);
-		button2.setText("Save");
-		button2.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-//				SaveFileAction save = new SaveFileAction();
-//				save.run();
-			}
-		});
-		Button button3 = new Button(buttonComp, SWT.PUSH);
-		button3.setText("Delete");
-		button3.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TableItem[] tableItems = LeftFieldTablViewer.getInstance().getTable().getSelection();
-				if (tableItems.length > 0 && MessageDialog.openQuestion(new Shell(), "", "Delete selected row(s)?")) {
-					delRows(tableItems);
-				}
-			}
-
-			private void delRows(TableItem[] tableItems) {
-				for (int i = 0; i < tableItems.length; i++) {
-					Person p = (Person) tableItems[i].getData();
-					LeftFieldTablViewer.getInstance().getPersons().remove(p);
-				}
-				LeftFieldTablViewer.getInstance().refresh();
-			}
-		});
+		
+		// button "Save"
+		aciSfa.fill(buttonComp);
+		
+		// button "Delete"
+		aciDa.fill(buttonComp);
+		
+//		Button button3 = new Button(buttonComp, SWT.PUSH);
+//		button3.setText("Delete");
+//		button3.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				TableItem[] tableItems = LeftFieldTablViewer.getInstance().getTable().getSelection();
+//				if (tableItems.length > 0 && MessageDialog.openQuestion(new Shell(), "", "Delete selected row(s)?")) {
+//					delRows(tableItems);
+//				}
+//			}
+//
+//			private void delRows(TableItem[] tableItems) {
+//				for (int i = 0; i < tableItems.length; i++) {
+//					Person p = (Person) tableItems[i].getData();
+//					LeftFieldTablViewer.getInstance().getPersons().remove(p);
+//				}
+//				LeftFieldTablViewer.getInstance().refresh();
+//			}
+//		});
 
 		Button button4 = new Button(buttonComp, SWT.PUSH);
 		button4.setText("Clear");
