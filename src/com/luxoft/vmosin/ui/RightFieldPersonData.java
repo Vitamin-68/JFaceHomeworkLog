@@ -29,6 +29,7 @@ public class RightFieldPersonData extends Composite {
 
 	private Text fieldName;
 	private Text fieldGroup;
+	private Button buttonCheck;
 
 	public RightFieldPersonData(Composite parent, int style) {
 		super(parent, style);
@@ -68,7 +69,7 @@ public class RightFieldPersonData extends Composite {
 		gridDataDone.horizontalSpan = 2;
 		labelDone.setLayoutData(gridDataDone);
 
-		Button buttonCheck = new Button(this, SWT.CHECK);
+		buttonCheck = new Button(this, SWT.CHECK);
 		GridData gridDataCheck = new GridData(SWT.END, SWT.TOP, true, false);
 		buttonCheck.setLayoutData(gridDataCheck);
 
