@@ -5,11 +5,13 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
-public class WorkAreaComposite extends Composite {
+import com.luxoft.vmosin.utils.Common;
 
+public class WorkAreaComposite extends Composite {
+	
 	public WorkAreaComposite(Composite parent) {
 		super(parent, SWT.NONE);
-
+		
 		FillLayout workAreaLayout = new FillLayout(SWT.HORIZONTAL);
 		this.setLayout(workAreaLayout);
 		SashForm form = new SashForm(this, SWT.HORIZONTAL);
@@ -18,6 +20,6 @@ public class WorkAreaComposite extends Composite {
 		new LeftFieldTablViewer(form, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
 		new RightFieldPersonData(form, SWT.NONE);
 
-		form.setWeights(new int[] { 55, 35 });
+		form.setWeights(new int[] { Common.tableWidthPercent, 100 - Common.tableWidthPercent});
 	}
 }

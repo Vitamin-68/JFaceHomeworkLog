@@ -2,6 +2,7 @@ package com.luxoft.vmosin.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -21,45 +22,9 @@ import com.luxoft.vmosin.utils.ColumnViewerComparator;
 import com.luxoft.vmosin.utils.Common;
 import com.luxoft.vmosin.utils.MyUtils;
 import com.luxoft.vmosin.eintity.Person;
-import com.luxoft.vmosin.repository.DataStoreList;
 import com.luxoft.vmosin.utils.PersonColumn;
 
 public class LeftFieldTablViewer extends TableViewer {
-
-	private static class OptimizedIndexSearcher {
-		private int lastIndex = 0;
-
-		public boolean isEven(TableItem item) {
-			TableItem[] items = item.getParent().getItems();
-
-			// 1. Search the next ten items
-			for (int i = lastIndex; i < items.length && lastIndex + 10 > i; i++) {
-				if (items[i] == item) {
-					lastIndex = i;
-					return lastIndex % 2 == 0;
-				}
-			}
-
-			// 2. Search the previous ten items
-			for (int i = lastIndex; i < items.length && lastIndex - 10 > i; i--) {
-				if (items[i] == item) {
-					lastIndex = i;
-					return lastIndex % 2 == 0;
-				}
-			}
-
-			// 3. Start from the beginning
-			for (int i = 0; i < items.length; i++) {
-				if (items[i] == item) {
-					lastIndex = i;
-					return lastIndex % 2 == 0;
-				}
-			}
-			return false;
-		}
-	}
-
-	final private OptimizedIndexSearcher searcher = new OptimizedIndexSearcher();
 
 	private static LeftFieldTablViewer instance;
 	private String fileStore;
@@ -73,9 +38,14 @@ public class LeftFieldTablViewer extends TableViewer {
 		table.setLinesVisible(true);
 		table.setHeaderBackground(new Color(Display.getDefault(), 220, 240, 250));
 
+//		create first empty column with Width = 0 
+//		needed to correct the bug - when placing an image in one of the columns, 
+//		the text in the 1st column is shifted
+		createTableColumn(this, SWT.NONE, null);
+
 		createTableColumn(this, SWT.LEFT, PersonColumn.NAME);
 		createTableColumn(this, SWT.RIGHT, PersonColumn.GROUP);
-		createTableColumn(this, SWT.CENTER, PersonColumn.IS_DONE);
+		createTableColumn(this, SWT.NONE, PersonColumn.IS_DONE);
 		this.addDoubleClickListener(new IDoubleClickListener() {
 
 			@Override
@@ -87,7 +57,6 @@ public class LeftFieldTablViewer extends TableViewer {
 				Common.slm.setMessage("File name: " + MyUtils.getNameFromPath(Common.persons.getFullFileName())
 						+ "		Status: Not saved.");
 			}
-
 		});
 		this.setInput(Common.persons.getPersons());
 
@@ -98,8 +67,23 @@ public class LeftFieldTablViewer extends TableViewer {
 
 	private TableViewerColumn createTableColumn(TableViewer viewer, int style, PersonColumn column) {
 		TableViewerColumn tColumn = new TableViewerColumn(viewer, style);
-		tColumn.getColumn().setWidth(138);
+
+		if (column == null) {
+			tColumn.setLabelProvider(new CellLabelProvider() {
+				@Override
+				public void update(ViewerCell cell) {
+					// TODO Auto-generated method stub
+				}
+			});
+			return tColumn;
+		}
+
+		int colSize = (int) (this.getTable().getParent().getBounds().width * Common.tableWidthPercent / 100 / 3);
+		tColumn.getColumn().setWidth(colSize);
 		tColumn.getColumn().setText(column.getName());
+//		tColumn.setLabelProvider(new StyledCellLabelProvider() {
+//			
+//		});
 		tColumn.setLabelProvider(createLabelProvider(viewer, column));
 //		ColumnViewerComparator cSorter = new ColumnViewerComparator(viewer, tColumn) {
 		new ColumnViewerComparator(viewer, tColumn) {
@@ -145,12 +129,12 @@ public class LeftFieldTablViewer extends TableViewer {
 			public Color getBackground(Object element) {
 				Color grayColor = tv.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
 
-				return (isEvenIdx ? null : grayColor);
+				return (isEvenIdx ? grayColor : null);
 			}
 
 			@Override
 			public void update(ViewerCell cell) {
-				isEvenIdx = searcher.isEven((TableItem) cell.getItem());
+				isEvenIdx = isEven((TableItem) cell.getItem());
 				super.update(cell);
 			}
 
@@ -185,6 +169,16 @@ public class LeftFieldTablViewer extends TableViewer {
 			@Override
 			public void dispose() {
 				super.dispose();
+			}
+
+			private boolean isEven(TableItem item) {
+				TableItem[] items = item.getParent().getItems();
+				for (int i = 0; i < items.length; i++) {
+					if (items[i] == item) {
+						return i % 2 == 0;
+					}
+				}
+				return false;
 			}
 		};
 	}
