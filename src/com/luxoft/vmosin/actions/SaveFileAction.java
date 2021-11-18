@@ -7,22 +7,26 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import com.luxoft.vmosin.ui.LeftFieldTablViewer;
+import com.luxoft.vmosin.repository.DataStoreList;
+import com.luxoft.vmosin.utils.Common;
 import com.luxoft.vmosin.utils.JsonDataStoreImpl;
+import com.luxoft.vmosin.utils.MyUtils;
 
 public class SaveFileAction extends Action {
 
 	private StatusLineManager statman;
+	private DataStoreList persons;
 
 	public SaveFileAction(StatusLineManager sm) {
 		super("&Save@Ctrl+S", AS_PUSH_BUTTON);
 		statman = sm;
+		this.setToolTipText("Save table");
+		persons = Common.persons;
 	}
 
 	public void run() {
 		if (MessageDialog.openQuestion(new Shell(), "Save", "Wanna save your changes?")) {
-			LeftFieldTablViewer tv = LeftFieldTablViewer.getInstance();
-			String fn = tv.getFileStore();
+			String fn = persons.getFullFileName();
 			JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
 			if (fn == null) {
 				FileDialog fileDialog = new FileDialog(new Shell(), SWT.SAVE);
@@ -31,15 +35,12 @@ public class SaveFileAction extends Action {
 				fn = fileDialog.open();
 			}
 			if (fn != null) {
-				dataStore.saveData(tv.getPersons(), fn);
-				tv.setFileStore(fn);
-				statman.setMessage("File name: " + getNameFromPath(tv.getFileStore()) + "		Status: Saved.");
+				dataStore.saveData(persons.getPersons(), fn);
+				persons.setFullFileName(fn);
+				persons.setStatus(true);
+				statman.setMessage(
+						"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Saved.");
 			}
 		}
-	}
-
-	private String getNameFromPath(String path) {
-		int idx = path.replaceAll("\\\\", "/").lastIndexOf("/");
-		return idx >= 0 ? path.substring(idx + 1) : path;
 	}
 }

@@ -19,7 +19,5 @@ public class WorkAreaComposite extends Composite {
 		new RightFieldPersonData(form, SWT.NONE);
 
 		form.setWeights(new int[] { 55, 35 });
-		
 	}
-
 }

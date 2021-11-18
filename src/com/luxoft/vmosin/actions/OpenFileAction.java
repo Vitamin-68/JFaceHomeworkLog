@@ -6,16 +6,21 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import com.luxoft.vmosin.repository.DataStoreList;
 import com.luxoft.vmosin.ui.LeftFieldTablViewer;
+import com.luxoft.vmosin.utils.Common;
 import com.luxoft.vmosin.utils.JsonDataStoreImpl;
+import com.luxoft.vmosin.utils.MyUtils;
 
 public class OpenFileAction extends Action {
-	
+
 	private StatusLineManager statman;
+	private DataStoreList persons;
 
 	public OpenFileAction(StatusLineManager sm) {
 		super("&Open file...@Ctrl+O", AS_PUSH_BUTTON);
 		statman = sm;
+		persons = Common.persons;
 	}
 
 	public void run() {
@@ -26,15 +31,11 @@ public class OpenFileAction extends Action {
 		String fn = fileDialog.open();
 		JsonDataStoreImpl dataStore = JsonDataStoreImpl.getInstance();
 		if (fn != null) {
-			tv.setFileStore(dataStore.loadData(fn, tv.getPersons()));
+			persons.setFullFileName(dataStore.loadData(fn, persons.getPersons()));
+			persons.setStatus(true);
 			tv.refresh();
-			statman.setMessage("File name: " + getNameFromPath(LeftFieldTablViewer.getInstance().getFileStore()) 
-					+ "		Status: Saved.");
+			statman.setMessage(
+					"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Loaded.");
 		}
-	}
-	
-	private String getNameFromPath(String path) {
-		int idx = path.replaceAll("\\\\", "/").lastIndexOf("/");
-		return idx >= 0 ? path.substring(idx + 1) : path;
 	}
 }

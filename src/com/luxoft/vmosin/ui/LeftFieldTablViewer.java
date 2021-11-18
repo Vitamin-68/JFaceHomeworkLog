@@ -1,11 +1,10 @@
 package com.luxoft.vmosin.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -14,11 +13,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.luxoft.vmosin.utils.ColumnViewerComparator;
+import com.luxoft.vmosin.utils.Common;
+import com.luxoft.vmosin.utils.MyUtils;
 import com.luxoft.vmosin.eintity.Person;
+import com.luxoft.vmosin.repository.DataStoreList;
 import com.luxoft.vmosin.utils.PersonColumn;
 
 public class LeftFieldTablViewer extends TableViewer {
@@ -52,7 +55,6 @@ public class LeftFieldTablViewer extends TableViewer {
 					return lastIndex % 2 == 0;
 				}
 			}
-
 			return false;
 		}
 	}
@@ -61,7 +63,6 @@ public class LeftFieldTablViewer extends TableViewer {
 
 	private static LeftFieldTablViewer instance;
 	private String fileStore;
-	private List<Person> persons = new ArrayList<>();
 
 	public LeftFieldTablViewer(Composite parent, int style) {
 		super(parent, style);
@@ -70,17 +71,29 @@ public class LeftFieldTablViewer extends TableViewer {
 		Table table = this.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		table.setHeaderBackground(new Color(Display.getDefault(), 220, 240, 250));
 
-		createTableColumn(this, SWT.NONE, PersonColumn.NAME);
+		createTableColumn(this, SWT.LEFT, PersonColumn.NAME);
 		createTableColumn(this, SWT.RIGHT, PersonColumn.GROUP);
 		createTableColumn(this, SWT.CENTER, PersonColumn.IS_DONE);
+		this.addDoubleClickListener(new IDoubleClickListener() {
 
-		this.setInput(persons);
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				TableItem[] tableItems = instance.getTable().getSelection();
+				Person p = (Person) tableItems[0].getData();
+				p.setDone(!p.isDone());
+				instance.refresh();
+				Common.slm.setMessage("File name: " + MyUtils.getNameFromPath(Common.persons.getFullFileName())
+						+ "		Status: Not saved.");
+			}
+
+		});
+		this.setInput(Common.persons.getPersons());
 
 		if (instance == null) {
 			instance = this;
 		}
-
 	}
 
 	private TableViewerColumn createTableColumn(TableViewer viewer, int style, PersonColumn column) {
@@ -88,7 +101,8 @@ public class LeftFieldTablViewer extends TableViewer {
 		tColumn.getColumn().setWidth(138);
 		tColumn.getColumn().setText(column.getName());
 		tColumn.setLabelProvider(createLabelProvider(viewer, column));
-		ColumnViewerComparator cSorter = new ColumnViewerComparator(viewer, tColumn) {
+//		ColumnViewerComparator cSorter = new ColumnViewerComparator(viewer, tColumn) {
+		new ColumnViewerComparator(viewer, tColumn) {
 
 			@Override
 			protected int doCompare(Viewer viewer, Object e1, Object e2) {
@@ -118,9 +132,8 @@ public class LeftFieldTablViewer extends TableViewer {
 				}
 				return p1Field.compareToIgnoreCase(p2Field);
 			}
-
 		};
-		cSorter.setSorter(cSorter, ColumnViewerComparator.ASC);
+//		cSorter.setSorter(cSorter, ColumnViewerComparator.ASC);
 		return tColumn;
 	}
 
@@ -180,14 +193,6 @@ public class LeftFieldTablViewer extends TableViewer {
 		return instance;
 	}
 
-	public List<Person> getPersons() {
-		return persons;
-	}
-
-	public void setPersons(List<Person> persons) {
-		this.persons = persons;
-	}
-
 	public String getFileStore() {
 		return fileStore;
 	}
@@ -195,5 +200,4 @@ public class LeftFieldTablViewer extends TableViewer {
 	public void setFileStore(String fileStore) {
 		this.fileStore = fileStore;
 	}
-
 }

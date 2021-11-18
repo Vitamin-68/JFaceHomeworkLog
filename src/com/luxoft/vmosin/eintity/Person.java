@@ -5,8 +5,9 @@ public class Person {
 	private String name;
 	private int group;
 	private boolean isDone;
-	
-	public Person() {};
+
+	public Person() {
+	};
 
 	public Person(String name, int group, boolean isDone) {
 		super();

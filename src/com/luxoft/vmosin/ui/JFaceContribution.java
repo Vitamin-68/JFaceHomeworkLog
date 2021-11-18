@@ -12,11 +12,11 @@ import com.luxoft.vmosin.actions.DeleteAction;
 import com.luxoft.vmosin.actions.OpenFileAction;
 import com.luxoft.vmosin.actions.SaveFileAction;
 import com.luxoft.vmosin.actions.SaveFileAsAction;
+import com.luxoft.vmosin.utils.Common;
 
 public class JFaceContribution extends ApplicationWindow {
-	StatusLineManager slm = new StatusLineManager();
-//	StatusAction status_action = new StatusAction(slm);
-	SaveFileAction sfa = new SaveFileAction(slm);
+
+	private final StatusLineManager slm = Common.slm;
 
 	public JFaceContribution() {
 		super(null);
@@ -25,12 +25,10 @@ public class JFaceContribution extends ApplicationWindow {
 	}
 
 	protected Control createContents(Composite parent) {
-		
+
 		getShell().setText("JFace homework log");
 		parent.setSize(700, 300);
-		
 		new WorkAreaComposite(parent);
-		
 		return parent;
 	}
 
@@ -47,10 +45,10 @@ public class JFaceContribution extends ApplicationWindow {
 		menuFile.add(new OpenFileAction(slm));
 		menuFile.add(new SaveFileAction(slm));
 		menuFile.add(new SaveFileAsAction(slm));
-		menuFile.add(new ExitAction(this));
+		menuFile.add(new ExitAction(this, slm));
 		menuEdit.add(new DeleteAction(slm));
 		menuHelp.add(new AboutAction());
-		
+
 		return mainMenu;
 	}
 
