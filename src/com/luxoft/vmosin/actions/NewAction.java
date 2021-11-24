@@ -39,8 +39,8 @@ public class NewAction extends Action {
 			fieldGroup.setText("");
 			buttonCheck.setSelection(false);
 			fieldName.setFocus();
-			statman.setMessage(
-					"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Not saved.");
+			statman.setMessage(String.format("File name: %s		Status: Not saved.",
+					MyUtils.getNameFromPath(persons.getFullFileName())));
 			persons.setStatus(false);
 		} else {
 			Status status = new Status(IStatus.WARNING, "dd", 0,

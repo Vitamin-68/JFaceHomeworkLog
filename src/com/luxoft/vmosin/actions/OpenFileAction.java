@@ -34,8 +34,8 @@ public class OpenFileAction extends Action {
 			persons.setFullFileName(dataStore.loadData(fn, persons.getPersons()));
 			persons.setStatus(true);
 			tv.refresh();
-			statman.setMessage(
-					"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Loaded.");
+			statman.setMessage(String.format("File name: %s		Status: Loaded.",
+					MyUtils.getNameFromPath(persons.getFullFileName())));
 		}
 	}
 }

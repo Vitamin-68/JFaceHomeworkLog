@@ -30,8 +30,8 @@ public class DeleteAction extends Action {
 		if (tableItems.length > 0 && MessageDialog.openQuestion(new Shell(), "", "Delete selected row(s)?")) {
 			delRows(tableItems);
 			persons.setStatus(false);
-			statman.setMessage(
-					"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Not saved.");
+			statman.setMessage(String.format("File name: %s		Status: Not saved.",
+					MyUtils.getNameFromPath(persons.getFullFileName())));
 		}
 	}
 

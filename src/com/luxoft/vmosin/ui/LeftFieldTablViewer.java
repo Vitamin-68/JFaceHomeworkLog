@@ -45,7 +45,7 @@ public class LeftFieldTablViewer extends TableViewer {
 
 		createTableColumn(this, SWT.LEFT, PersonColumn.NAME);
 		createTableColumn(this, SWT.RIGHT, PersonColumn.GROUP);
-		createTableColumn(this, SWT.NONE, PersonColumn.IS_DONE);
+		createTableColumn(this, SWT.CENTER, PersonColumn.IS_DONE);
 		this.addDoubleClickListener(new IDoubleClickListener() {
 
 			@Override
@@ -54,8 +54,9 @@ public class LeftFieldTablViewer extends TableViewer {
 				Person p = (Person) tableItems[0].getData();
 				p.setDone(!p.isDone());
 				instance.refresh();
-				Common.slm.setMessage("File name: " + MyUtils.getNameFromPath(Common.persons.getFullFileName())
-						+ "		Status: Not saved.");
+				Common.slm.setMessage(String.format("File name: %s		Status: Not saved.",
+						MyUtils.getNameFromPath(Common.persons.getFullFileName())));
+				Common.persons.setStatus(false);
 			}
 		});
 		this.setInput(Common.persons.getPersons());
@@ -75,11 +76,14 @@ public class LeftFieldTablViewer extends TableViewer {
 					// TODO Auto-generated method stub
 				}
 			});
+			tColumn.getColumn().setResizable(false);
 			return tColumn;
 		}
 
-		int colSize = (int) (this.getTable().getParent().getBounds().width * Common.tableWidthPercent / 100 / 3);
-		tColumn.getColumn().setWidth(colSize);
+		Class<Person> clazz = Person.class;
+		int columnWidth = (int) (this.getTable().getParent().getBounds().width * Common.tableWidthPercent / 100
+				/ clazz.getDeclaredFields().length);
+		tColumn.getColumn().setWidth(columnWidth);
 		tColumn.getColumn().setText(column.getName());
 //		tColumn.setLabelProvider(new StyledCellLabelProvider() {
 //			

@@ -38,8 +38,8 @@ public class SaveFileAction extends Action {
 				dataStore.saveData(persons.getPersons(), fn);
 				persons.setFullFileName(fn);
 				persons.setStatus(true);
-				statman.setMessage(
-						"File name: " + MyUtils.getNameFromPath(persons.getFullFileName()) + "		Status: Saved.");
+				statman.setMessage(String.format("File name: %s		Status: Saved.",
+						MyUtils.getNameFromPath(persons.getFullFileName())));
 			}
 		}
 	}
